@@ -123,7 +123,7 @@ export default function HomePage() {
     <>
       <header className="header">
         <PageContainer>
-          <h1>DIANA&apos;S SEAFOOD</h1>
+          <h1>HUBERT&apos;S SEAFOOD</h1>
           <p>
             High-quality, easy to prepare meals
             <br />
@@ -145,8 +145,8 @@ export default function HomePage() {
       </section>
 
       <HeroSection
-        title="The Mother of Seafood since 1979"
-        description="Diana has perfected the art of delivering restaurant-quality seafood experiences straight to your home. Every meal is crafted with care and passion."
+        title="The Father of Seafood since 1979"
+        description="Hubert has perfected the art of delivering restaurant-quality seafood experiences straight to your home. Every meal is crafted with care and passion."
         symbol={<span className="hero-symbol">♦</span>}
       />
 
@@ -222,7 +222,7 @@ export default function HomePage() {
         variant="flush"
         containerClassName="products-fullbleed"
         title="OUR PRODUCTS"
-        subtitle="Goodness made the Diana's way — with the best, most beautiful, real ingredients."
+        subtitle="Goodness made the Hubert's way — with the best, most beautiful, real ingredients."
       >
         <div className="products-container">
           <div className="product-grid">
@@ -343,7 +343,7 @@ export default function HomePage() {
           </div>
           <div className="footer-section">
             <h3>Join our team</h3>
-            <p>careers@dianasseafod.com</p>
+            <p>careers@hubertsseafod.com</p>
           </div>
         </div>
       </footer>

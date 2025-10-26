@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import PageSection from '@/components/ui/PageSection';
+import PageShell from '@/components/ui/PageShell';
 import ProductCard, { type ProductCardData } from '@/components/ui/ProductCard';
 
 export default function ProductsPage() {
@@ -29,22 +29,20 @@ export default function ProductsPage() {
 
   if (loading) {
     return (
-      <PageSection variant="tight">
-        <div className="page-container">
-          <div className="text-center">Loading products...</div>
-        </div>
-      </PageSection>
+      <PageShell variant="tight" headingLevel={1} title="Products">
+        <div className="text-center">Loading products...</div>
+      </PageShell>
     );
   }
 
   return (
-    <PageSection
+    <PageShell
       title="Products"
-      subtitle="Explore our latest seafood offerings, prepared the Diana way."
+      subtitle="Explore our latest seafood offerings, prepared the Hubert way."
       headingLevel={1}
     >
       {products.length === 0 ? (
-        <div className="text-center page-section--tight">
+        <div className="text-center">
           <p className="text-xl text-gray-600 mb-4">No products found</p>
           <p className="text-gray-500">Check back soon for new arrivals!</p>
         </div>
@@ -55,6 +53,6 @@ export default function ProductsPage() {
           ))}
         </div>
       )}
-    </PageSection>
+    </PageShell>
   );
 }

@@ -15,48 +15,77 @@ const commerceClient = axios.create({
 });
 
 // Cart operations
-export const getCart = async () => {
-  const response = await commerceClient.get('/api/cart');
+export interface CartResponse {
+  success: boolean;
+  data: unknown;
+  error?: string;
+}
+
+export const getCart = async (): Promise<CartResponse> => {
+  const response = await commerceClient.get<CartResponse>('/api/cart');
   return response.data;
 };
 
-export const addToCart = async (purchasableId: number, qty: number = 1) => {
-  const response = await commerceClient.post('/api/cart/add', {
+export const addToCart = async (purchasableId: number, qty: number = 1): Promise<CartResponse> => {
+  const response = await commerceClient.post<CartResponse>('/api/cart/add', {
     purchasableId,
     qty,
   });
   return response.data;
 };
 
-export const updateCartItem = async (lineItemId: number, qty: number) => {
-  const response = await commerceClient.post('/api/cart/update', {
+export const updateCartItem = async (lineItemId: number, qty: number): Promise<CartResponse> => {
+  const response = await commerceClient.post<CartResponse>('/api/cart/update', {
     lineItemId,
     qty,
   });
   return response.data;
 };
 
-export const removeFromCart = async (lineItemId: number) => {
-  const response = await commerceClient.post('/api/cart/remove', {
+export const removeFromCart = async (lineItemId: number): Promise<CartResponse> => {
+  const response = await commerceClient.post<CartResponse>('/api/cart/remove', {
     lineItemId,
   });
   return response.data;
 };
 
 // Checkout operations
-export const checkout = async (data: {
+export interface AddressPayload {
+  firstName: string;
+  lastName: string;
+  address1: string;
+  city: string;
+  zipCode: string;
+  countryCode: string;
+  [key: string]: unknown;
+}
+
+export interface CheckoutPayload {
   email: string;
-  shippingAddress: any;
-  billingAddress: any;
+  shippingAddress: AddressPayload;
+  billingAddress: AddressPayload;
   gatewayId: number;
-}) => {
-  const response = await commerceClient.post('/api/checkout', data);
+  paymentSourceId?: number;
+  paymentForm?: Record<string, unknown>;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+  error?: string;
+}
+
+export const checkout = async (data: CheckoutPayload): Promise<ApiResponse<unknown>> => {
+  const response = await commerceClient.post<ApiResponse<unknown>>('/api/checkout', data);
   return response.data;
 };
 
 // Use Craft Commerce actions for payment processing
-export const processPayment = async (orderNumber: string, paymentData: any) => {
-  const response = await commerceClient.post('/actions/commerce/payments/pay', {
+export const processPayment = async (
+  orderNumber: string,
+  paymentData: Record<string, unknown>
+): Promise<ApiResponse<unknown>> => {
+  const response = await commerceClient.post<ApiResponse<unknown>>('/actions/commerce/payments/pay', {
     orderNumber,
     ...paymentData,
   });

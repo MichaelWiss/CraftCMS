@@ -12,7 +12,7 @@ use yii\web\Response;
 
 class ProductsController extends Controller
 {
-    protected array|bool|int $allowAnonymous = ['index', 'view'];
+    protected array|bool|int $allowAnonymous = ['index', 'view', 'view-by-slug'];
     
     public function beforeAction($action): bool
     {
@@ -63,6 +63,40 @@ class ProductsController extends Controller
                 ->section('products')
                 ->with(['productImage'])
                 ->id($id)
+                ->one();
+
+            if (!$product) {
+                $this->response->setStatusCode(404);
+                return $this->asJson([
+                    'success' => false,
+                    'error' => 'Product not found'
+                ]);
+            }
+
+            return $this->asJson([
+                'success' => true,
+                'data' => $this->formatProduct($product)
+            ]);
+        } catch (\Exception $e) {
+            return $this->asJson([
+                'success' => false,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * GET /api/products/slug/<slug>
+     */
+    public function actionViewBySlug(string $slug): Response
+    {
+        $this->response->format = Response::FORMAT_JSON;
+
+        try {
+            $product = Entry::find()
+                ->section('products')
+                ->with(['productImage'])
+                ->slug($slug)
                 ->one();
 
             if (!$product) {

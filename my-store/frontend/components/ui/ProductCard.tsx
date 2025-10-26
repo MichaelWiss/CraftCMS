@@ -30,6 +30,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         <ProductImage
           src={product.image?.url}
           alt={product.image?.title ?? product.title}
+          width={product.image?.width}
+          height={product.image?.height}
           className="aspect-square"
         />
         <div className="p-4 space-y-3">

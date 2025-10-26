@@ -2,12 +2,12 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
-import PageSection from '@/components/ui/PageSection';
+import PageShell from '@/components/ui/PageShell';
 import PriceTag from '@/components/ui/PriceTag';
 import useCartStore from '@/state/cart';
 
 export default function CartPage() {
-  const { cart, isLoading, fetchCart, updateItem, removeItem } = useCartStore();
+  const { cart, isLoading, fetchCart, updateItem, removeItem, hasCartItems, getItemCount, getSubtotal } = useCartStore();
 
   useEffect(() => {
     fetchCart();
@@ -15,32 +15,28 @@ export default function CartPage() {
 
   if (isLoading) {
     return (
-      <PageSection variant="tight">
-        <div className="page-container">
-          <div className="text-center">Loading cart...</div>
-        </div>
-      </PageSection>
+      <PageShell variant="tight" title="Shopping Cart">
+        <div className="text-center">Loading cart...</div>
+      </PageShell>
     );
   }
 
-  if (!cart || cart.lineItems.length === 0) {
+  if (!cart || !hasCartItems()) {
     return (
-      <PageSection variant="tight">
-        <div className="page-container">
-          <div className="text-center empty-state">
-            <h1>Your Cart is Empty</h1>
-            <p>Add some products to get started.</p>
-            <Link href="/products" className="btn">
-              Continue Shopping
-            </Link>
-          </div>
+      <PageShell variant="tight" title="Shopping Cart">
+        <div className="text-center empty-state">
+          <h1>Your Cart is Empty</h1>
+          <p>Add some products to get started.</p>
+          <Link href="/products" className="btn">
+            Continue Shopping
+          </Link>
         </div>
-      </PageSection>
+      </PageShell>
     );
   }
 
   return (
-    <PageSection title="Shopping Cart" containerClassName="cart-layout" headingLevel={1}>
+    <PageShell title="Shopping Cart" headingLevel={1} sectionClassName="cart-shell" contentClassName="cart-layout">
       <div className="cart-items">
         {cart.lineItems.map((item) => (
           <article key={item.id} className="cart-line-item">
@@ -78,8 +74,12 @@ export default function CartPage() {
         <div className="cart-summary__box">
           <h2>Order Summary</h2>
           <div className="cart-summary__row">
+            <span>Items</span>
+            <span>{getItemCount()}</span>
+          </div>
+          <div className="cart-summary__row">
             <span>Subtotal</span>
-            <PriceTag amount={cart.itemSubtotal} />
+            <PriceTag amount={getSubtotal()} />
           </div>
           <div className="cart-summary__row cart-summary__row--total">
             <span>Total</span>
@@ -90,6 +90,6 @@ export default function CartPage() {
           </Link>
         </div>
       </aside>
-    </PageSection>
+    </PageShell>
   );
 }

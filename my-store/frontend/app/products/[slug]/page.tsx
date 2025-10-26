@@ -1,41 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import PageSection from '@/components/ui/PageSection';
+import PageShell from '@/components/ui/PageShell';
 import ProductImage from '@/components/ui/ProductImage';
 import PriceTag from '@/components/ui/PriceTag';
-import type { ProductCardData } from '@/components/ui/ProductCard';
+import useProductBySlug from '@/lib/hooks/useProduct';
 import useCartStore from '@/state/cart';
 
 export default function ProductDetailPage() {
   const params = useParams();
-  const [product, setProduct] = useState<ProductCardData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: product, isLoading, error } = useProductBySlug(params.slug);
   const { addItem } = useCartStore();
-
-  useEffect(() => {
-    const fetchProduct = async () => {
-      if (!params.slug) {
-        return;
-      }
-
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`);
-        const data = await response.json();
-        if (data.success) {
-          const found = data.data.find((p: ProductCardData) => p.slug === params.slug);
-          setProduct(found || null);
-        }
-      } catch (error) {
-        console.error('Error fetching product:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [params.slug]);
 
   const handleAddToCart = async () => {
     if (!product) {
@@ -50,33 +25,29 @@ export default function ProductDetailPage() {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <PageSection variant="tight">
-        <div className="page-container">
-          <div className="text-center">Loading product...</div>
-        </div>
-      </PageSection>
+      <PageShell variant="tight" title="Product">
+        <div className="text-center">Loading product...</div>
+      </PageShell>
     );
   }
 
-  if (!product) {
+  if (error || !product) {
     return (
-      <PageSection variant="tight">
-        <div className="page-container">
-          <div className="text-center empty-state">
-            <h1>Product not found</h1>
-            <a href="/products" className="btn">
-              Back to products
-            </a>
-          </div>
+      <PageShell variant="tight" title="Product">
+        <div className="text-center empty-state">
+          <h1>Product not found</h1>
+          <a href="/products" className="btn">
+            Back to products
+          </a>
         </div>
-      </PageSection>
+      </PageShell>
     );
   }
 
   return (
-    <PageSection variant="tight">
+    <PageShell variant="tight" title={product.title} headingLevel={1}>
       <div className="product-detail">
         <ProductImage
           src={product.image?.url ?? null}
@@ -85,7 +56,6 @@ export default function ProductDetailPage() {
         />
 
         <div className="product-detail__content">
-          <h1>{product.title}</h1>
           <PriceTag amount={product.price ?? null} />
 
           {product.description ? (
@@ -102,6 +72,6 @@ export default function ProductDetailPage() {
           </button>
         </div>
       </div>
-    </PageSection>
+    </PageShell>
   );
 }

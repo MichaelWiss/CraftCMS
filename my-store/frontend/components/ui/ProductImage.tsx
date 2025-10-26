@@ -1,8 +1,12 @@
+import Image from 'next/image';
+
 interface ProductImageProps {
   src?: string | null;
   alt?: string;
   className?: string;
   placeholder?: string;
+  width?: number;
+  height?: number;
 }
 
 export default function ProductImage({
@@ -10,13 +14,23 @@ export default function ProductImage({
   alt = '',
   className = '',
   placeholder = 'Product image coming soon',
+  width,
+  height,
 }: ProductImageProps) {
   const wrapperClassName = ['product-image', className].filter(Boolean).join(' ');
 
   if (src) {
     return (
       <div className={wrapperClassName}>
-        <img src={src} alt={alt} className="product-image__media" />
+        <Image
+          src={src}
+          alt={alt}
+          fill={!width || !height}
+          width={width}
+          height={height}
+          className="product-image__media"
+          sizes="(min-width: 768px) 400px, 100vw"
+        />
       </div>
     );
   }
