@@ -1,0 +1,4 @@
+# Storage Directory
+
+This directory is used by Craft CMS for runtime files, logs, and backups.
+It should be writable by the web server.

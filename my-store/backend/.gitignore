@@ -1,0 +1,7 @@
+.env
+/vendor/
+/storage/*
+!/storage/.gitkeep
+/web/cpresources/
+.DS_Store
+composer.lock
